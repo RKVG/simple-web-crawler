@@ -1,0 +1,15 @@
+# System
+# -----------------
+.classpath
+.project
+.settings
+.idea
+
+# File Types
+# -----------------
+*.iml
+*.log
+
+# Target
+# -----------------
+/**/target
