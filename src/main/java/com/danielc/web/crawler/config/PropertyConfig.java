@@ -3,6 +3,8 @@ package com.danielc.web.crawler.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
@@ -22,12 +24,12 @@ public class PropertyConfig implements AppConfig {
   private static final String DEFAULT_PROPERTY = "application.properties";
   private static PropertyConfig config;
 
-  private String propertyFile = DEFAULT_PROPERTY;
+  private String customProperty;
   private Properties props = new Properties();
 
   private PropertyConfig(String fileName) {
     if (isNotBlank(fileName)) {
-      this.propertyFile = fileName;
+      this.customProperty = fileName;
 
     } else {
       LOGGER.debug("No config file supplied. Use default {}", DEFAULT_PROPERTY);
@@ -44,18 +46,18 @@ public class PropertyConfig implements AppConfig {
   @Override
   public Optional<AppConfig> load() {
 
-    try (InputStream inputStream = PropertyConfig.class.getClassLoader().getResourceAsStream(propertyFile)) {
+    try (InputStream inputStream = loadPropertyWithDefault()) {
 
       if (inputStream != null) {
         props.load(inputStream);
 
       } else {
-        LOGGER.error("Cannot find property file {}. Please check your file path.", propertyFile);
+        LOGGER.error("Cannot find property file {}. Please check your file path.", getLoadingProperty());
         return Optional.empty();
       }
 
     } catch (IOException e) {
-      LOGGER.error("Error when loading property file {}!", propertyFile, e);
+      LOGGER.error("Error when loading property file {}!", getLoadingProperty(), e);
       return Optional.empty();
     }
 
@@ -65,6 +67,7 @@ public class PropertyConfig implements AppConfig {
   @Override
   public int getRequestTimeout() {
     try {
+      LOGGER.debug(props.getProperty(REQUEST_TIMEOUT));
       return Integer.parseInt(props.getProperty(REQUEST_TIMEOUT));
 
     } catch (NumberFormatException e) {
@@ -75,7 +78,19 @@ public class PropertyConfig implements AppConfig {
 
   @Override
   public boolean getFollowRedirects() {
+    LOGGER.debug(props.getProperty(REQUEST_FOLLOW_REDIRECT));
     return Boolean.parseBoolean(props.getProperty(REQUEST_FOLLOW_REDIRECT));
+  }
+
+  private InputStream loadPropertyWithDefault() throws FileNotFoundException {
+    if (isNotBlank(customProperty)) {
+      return new FileInputStream(customProperty);
+    }
+    return PropertyConfig.class.getClassLoader().getResourceAsStream(DEFAULT_PROPERTY);
+  }
+
+  private String getLoadingProperty() {
+    return isNotBlank(customProperty) ? customProperty : DEFAULT_PROPERTY;
   }
 
   // for test

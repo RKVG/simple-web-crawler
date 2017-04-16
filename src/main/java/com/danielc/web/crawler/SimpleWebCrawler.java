@@ -8,10 +8,14 @@ import com.danielc.web.crawler.service.JsoupCrawler;
 
 public class SimpleWebCrawler {
 
+  private static final String CUSTOM_PROPERTY = "config";
+
   public static void main(String[] args) {
 
+    String configFile = System.getProperty(CUSTOM_PROPERTY);
+
     Application application = ApplicationBuilder.newInstance()
-      .appConfig(PropertyConfig.getInstance(null))
+      .appConfig(PropertyConfig.getInstance(configFile))
       .crawler(new JsoupCrawler())
       .printer(new GsonPrinter())
       .build();

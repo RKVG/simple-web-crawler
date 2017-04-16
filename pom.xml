@@ -106,7 +106,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>com.danielc.web.crawler.Application</mainClass>
+              <mainClass>com.danielc.web.crawler.SimpleWebCrawler</mainClass>
             </manifest>
           </archive>
         </configuration>
