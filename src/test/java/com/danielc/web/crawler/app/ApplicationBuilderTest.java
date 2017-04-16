@@ -31,16 +31,16 @@ public class ApplicationBuilderTest {
 
   @Test
   public void shouldBuildExpectedApplication() {
-    Application result = ApplicationBuilder.newInstance()
+    Application candidate = ApplicationBuilder.newInstance()
       .appConfig(mockAppConfig)
       .crawler(mockCrawler)
       .printer(mockPrinter)
       .build();
 
-    assertThat(result, is(notNullValue()));
-    assertThat(result.config, is(mockAppConfig));
-    assertThat(result.crawler, is(mockCrawler));
-    assertThat(result.printer, is(mockPrinter));
+    assertThat(candidate, is(notNullValue()));
+    assertThat(candidate.config, is(mockAppConfig));
+    assertThat(candidate.crawler, is(mockCrawler));
+    assertThat(candidate.printer, is(mockPrinter));
   }
 
 }

@@ -34,10 +34,6 @@ public class ApplicationBuilder {
       throw new IllegalStateException("No application config found!");
     }
 
-    if (crawler != null) {
-      this.crawler.setConfig(this.appConfig);
-    }
-
     return new Application(this.appConfig, this.crawler, this.printer);
   }
 

@@ -27,12 +27,14 @@ public class Application {
 
     config
       .load()
-      .ifPresent(conf ->
+      .ifPresent(conf -> {
 
+        crawler.setConfig(conf);
         printer.print(
           crawler.crawl(scanner.nextLine())
-        )
-      );
+        );
+
+      });
   }
 
 }

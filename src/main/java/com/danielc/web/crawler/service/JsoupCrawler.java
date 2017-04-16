@@ -2,6 +2,7 @@ package com.danielc.web.crawler.service;
 
 import com.danielc.web.crawler.config.AppConfig;
 import com.danielc.web.crawler.model.Page;
+import com.danielc.web.crawler.model.PageBuilder;
 import com.danielc.web.crawler.util.URLFormatHelper;
 import com.google.common.collect.Sets;
 import org.jsoup.Jsoup;
@@ -49,8 +50,7 @@ public class JsoupCrawler implements Crawler {
           Set<String> scriptAssets = doc.select("script[src]").stream().map(script -> script.attr("abs:src")).collect(toSet());
 
           visitedPages.add(
-            Page
-              .builder()
+            PageBuilder.newInstance()
               .url(url)
               .assets(metaAssets)
               .assets(linksAssets)

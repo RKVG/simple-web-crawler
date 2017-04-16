@@ -125,6 +125,13 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>${plugin.maven.jacoco}</version>
+        <configuration>
+          <!-- Exclude classes with no testing value -->
+          <excludes>
+            <exclude>com/danielc/web/crawler/service/GsonPrinter.class</exclude>
+            <exclude>com/danielc/web/crawler/SimpleWebCrawler.class</exclude>
+          </excludes>
+        </configuration>
         <executions>
           <execution>
             <goals>
