@@ -17,7 +17,8 @@ public class JsoupCrawler implements Crawler {
 
   private AppConfig config;
 
-  public JsoupCrawler(AppConfig config) {
+  @Override
+  public void setConfig(AppConfig config) {
     this.config = config;
   }
 
