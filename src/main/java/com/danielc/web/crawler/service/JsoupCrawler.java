@@ -1,14 +1,14 @@
 package com.danielc.web.crawler.service;
 
 import com.danielc.web.crawler.config.AppConfig;
-import com.danielc.web.crawler.model.Page;
 import com.danielc.web.crawler.model.PageBuilder;
+import com.danielc.web.crawler.repository.PageRepository;
+import com.danielc.web.crawler.repository.UrlRepository;
 import com.danielc.web.crawler.util.URLFormatHelper;
 import com.google.common.collect.Sets;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.util.Collection;
 import java.util.Set;
 
 import static com.danielc.web.crawler.util.URLFormatHelper.cleanUrl;
@@ -17,6 +17,8 @@ import static java.util.stream.Collectors.toSet;
 public class JsoupCrawler implements Crawler {
 
   private AppConfig config;
+  private UrlRepository urlRepository;
+  private PageRepository pageRepository;
 
   @Override
   public void setConfig(AppConfig config) {
@@ -24,16 +26,18 @@ public class JsoupCrawler implements Crawler {
   }
 
   @Override
-  public Collection<Page> crawl(String baseUrl) {
+  public void setRepositories(UrlRepository urlRepository, PageRepository pageRepository) {
+    this.urlRepository = urlRepository;
+    this.pageRepository = pageRepository;
+  }
 
-    Set<String> visitedUrls = Sets.newHashSet();
-    Set<String> unvisitedUrls = Sets.newHashSet();
-    Set<Page> visitedPages = Sets.newHashSet();
+  @Override
+  public void crawl(String baseUrl) {
+    urlRepository.storeUnvisitedUrl(baseUrl);
 
-    unvisitedUrls.add(baseUrl);
+    while (urlRepository.getUnvisitedUrlsCount() > 0) {
 
-    while (unvisitedUrls.size() > 0) {
-
+      Set<String> unvisitedUrls = urlRepository.findAllUnvisitedUrls();
       Set<String> newUrls = Sets.newHashSet();
 
       for (String url : unvisitedUrls) {
@@ -49,7 +53,7 @@ public class JsoupCrawler implements Crawler {
           Set<String> imageAssets = doc.select("img[src]").stream().map(image -> image.attr("abs:src")).collect(toSet());
           Set<String> scriptAssets = doc.select("script[src]").stream().map(script -> script.attr("abs:src")).collect(toSet());
 
-          visitedPages.add(
+          pageRepository.store(
             PageBuilder.newInstance()
               .url(url)
               .assets(metaAssets)
@@ -59,12 +63,12 @@ public class JsoupCrawler implements Crawler {
               .build()
           );
 
-          visitedUrls.add(cleanUrl(url));
+          urlRepository.storeVisitedUrl(cleanUrl(url));
 
           newUrls.addAll(
             doc.select("a[href]").stream()
               .map(link -> cleanUrl(link.attr("abs:href")))
-              .filter(link -> link.startsWith(doc.baseUri()) && !visitedUrls.contains(link))
+              .filter(link -> link.startsWith(doc.baseUri()) && !urlRepository.isUrlVisited(link))
               .collect(toSet())
           );
 
@@ -74,10 +78,8 @@ public class JsoupCrawler implements Crawler {
 
       }
 
-      unvisitedUrls = newUrls;
+      urlRepository.refreshUnvisitedUrls(newUrls);
     }
-
-    return visitedPages;
   }
 
 }

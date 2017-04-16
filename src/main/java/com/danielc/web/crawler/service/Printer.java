@@ -1,11 +1,11 @@
 package com.danielc.web.crawler.service;
 
-import com.danielc.web.crawler.model.Page;
-
-import java.util.Collection;
+import com.danielc.web.crawler.repository.PageRepository;
 
 public interface Printer {
 
-  void print(Collection<Page> pages);
+  void setRepository(PageRepository pageRepository);
+
+  void print();
 
 }
