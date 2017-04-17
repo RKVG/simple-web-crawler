@@ -9,7 +9,7 @@ import static org.apache.commons.lang3.StringUtils.repeat;
 
 public class GsonPrinter implements Printer {
 
-  private static final int MARGIN = 20;
+  private static final int MARGIN = 30;
   private static final String PRINT_HEADING = "|%sCrawled %d page(s):%s|";
   private static final String ERROR_REPORT_HEADING = "|%sPages in ERROR [%d/%d]:%s|";
 
@@ -37,20 +37,18 @@ public class GsonPrinter implements Printer {
     int allCount = pageRepository.countAll();
     int errorCount = pageRepository.countInError();
 
-    if (config.isPrinterExcludeErrors()) {
-      printHeading(String.format(PRINT_HEADING, repeat(" ", MARGIN), allCount - errorCount, repeat(" ", MARGIN)));
-      System.out.println(gson.toJson(pageRepository.findAllWithoutError()));
+    printHeading(String.format(PRINT_HEADING, repeat(" ", MARGIN), allCount, repeat(" ", MARGIN)));
 
+    if (config.isPrinterExcludeErrors()) {
+      System.out.println(gson.toJson(pageRepository.findAllWithoutError()));
     } else {
-      printHeading(String.format(PRINT_HEADING, repeat(" ", MARGIN), allCount, repeat(" ", MARGIN)));
       System.out.println(gson.toJson(pageRepository.findAll()));
     }
 
-    if (config.isPrinterReportErrors()) {
+    if (config.isPrinterReportErrors() && errorCount > 0) {
       printHeading(String.format(ERROR_REPORT_HEADING, repeat(" ", MARGIN), errorCount, allCount, repeat(" ", MARGIN)));
       System.out.println(gson.toJson(pageRepository.findAllInError()));
     }
-
   }
 
   private void printHeading(String heading) {

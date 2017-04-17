@@ -43,7 +43,9 @@ public class URLFormatHelperParameterizedTest {
         {"http://www.google.com/?query=test", "http://www.google.com"},
         {"http://www.google.com#contact", "http://www.google.com"},
         {"http://www.google.com/#contact", "http://www.google.com"},
-        {"http://www.google.com/find-us#contact?query=test", "http://www.google.com/find-us"}
+        {"http://www.google.com/find-us#contact?query=test", "http://www.google.com/find-us"},
+        {"http://www.google.com/account/style.css", "http://www.google.com/account/style.css"},
+        {"http://www.google.com/account/style.css?query=test", "http://www.google.com/account/style.css"}
       }
     );
   }

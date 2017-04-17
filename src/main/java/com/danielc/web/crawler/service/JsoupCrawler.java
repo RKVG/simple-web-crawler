@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import static com.danielc.web.crawler.util.URLFormatHelper.cleanUrl;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.jsoup.Connection.Response;
@@ -65,7 +66,7 @@ public class JsoupCrawler implements Crawler {
     while (urlRepository.countUnvisitedUrls() > 0) {
 
       Collection<String> unvisitedUrls = urlRepository.findAllUnvisitedUrls();
-      Set<String> uncleanedNewUrls = Sets.newHashSet();
+      Set<String> newUrls = Sets.newHashSet();
 
       for (String url : unvisitedUrls) {
 
@@ -83,7 +84,7 @@ public class JsoupCrawler implements Crawler {
             Document doc = response.parse();
 
             // Collect all executable links
-            Set<String> links = collectLinkSet(doc.select("a[href],link[href]").stream().map(link -> link.attr("abs:href")).collect(toList()), executableLinkCollectors);
+            Set<String> links = collectLinkSet(doc.select("a[href],link[href]").stream().map(link -> cleanUrl(link.attr("abs:href"))).collect(toList()), executableLinkCollectors);
 
             List<String> assetLinks = assetUriCollector.collect(Lists.newArrayList(links)); // Some links might be asset, for example http://www.test.com/read-this.pdf
             List<String> executableLinks = links.stream().filter(link -> !assetLinks.contains(link)).collect(toList());
@@ -103,7 +104,7 @@ public class JsoupCrawler implements Crawler {
                 .build()
             );
 
-            uncleanedNewUrls.addAll(executableLinks);
+            newUrls.addAll(executableLinks);
 
           } else if (response.statusCode() >= 300) {
             throw new HttpStatusException(response.statusMessage(), response.statusCode(), url);
@@ -123,13 +124,13 @@ public class JsoupCrawler implements Crawler {
         }
 
         if (visitedUrlCounter >= config.getCrawlerMaxVisitedUrls()) {
-          LOGGER.info("We have reached the predefined max number of pages to visit {}. Bye!", visitedUrlCounter);
+          LOGGER.info("We have reached the predefined max number of pages to visit -> {}. Bye!", visitedUrlCounter);
           break crawlingLoop;
         }
       }
 
       urlRepository.refreshUnvisitedUrls(
-        uncleanedNewUrls.stream()
+        newUrls.stream()
           .map(URLFormatHelper::cleanUrl)
           .filter(link -> domainMatcher.matchedDomain(link) && !urlRepository.isUrlVisited(link))
           .collect(toSet())

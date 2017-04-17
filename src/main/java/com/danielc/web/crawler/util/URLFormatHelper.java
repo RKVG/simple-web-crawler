@@ -1,5 +1,10 @@
 package com.danielc.web.crawler.util;
 
+import org.apache.commons.lang3.CharEncoding;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +19,8 @@ public class URLFormatHelper {
       return url;
     }
 
-    String result = stripAllAfter(url, "?");
+    String result = tryUTF8Decoding(url);
+    result = stripAllAfter(result, "?");
     result = stripAllAfter(result, "#");
     return stripForwardSlash(result);
   }
@@ -29,6 +35,14 @@ public class URLFormatHelper {
   private static String stripForwardSlash(String url) {
     Matcher matcher = URL_PATTERN.matcher(url);
     return matcher.find() ? matcher.group("baseUrl") : url;
+  }
+
+  private static String tryUTF8Decoding(String url) {
+    try {
+      return URLDecoder.decode(url, CharEncoding.UTF_8);
+    } catch (UnsupportedEncodingException e) {
+      return url;
+    }
   }
 
 }
