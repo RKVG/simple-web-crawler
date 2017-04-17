@@ -2,6 +2,7 @@ package com.danielc.web.crawler.collector;
 
 import com.google.common.collect.Lists;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,11 +12,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class AssetUriCollector implements Collector {
 
-  private static final List<String> RECOGNISED_LINKS = Lists.newArrayList("HTML");
+  private static final List<String> REGISTERED_EXECUTABLE_LINKS = Lists.newArrayList("HTM", "HTML");
   private static final Pattern FILE_PATTERN = Pattern.compile("^.+://.[^://]+/.+\\.(?<type>.[^./ ]{0,6})$");
 
   @Override
-  public List<String> collect(List<String> inputs) {
+  public Collection<String> collect(Collection<String> inputs) {
     if (isEmpty(inputs)) {
       return inputs;
     }
@@ -29,7 +30,7 @@ public class AssetUriCollector implements Collector {
     }
 
     Matcher matcher = FILE_PATTERN.matcher(uri);
-    return matcher.find() && !RECOGNISED_LINKS.contains(matcher.group("type").toUpperCase());
+    return matcher.find() && !REGISTERED_EXECUTABLE_LINKS.contains(matcher.group("type").toUpperCase());
   }
 
 }

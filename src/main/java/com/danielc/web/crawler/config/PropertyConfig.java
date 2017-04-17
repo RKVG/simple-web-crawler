@@ -23,15 +23,16 @@ public class PropertyConfig implements AppConfig {
   private static PropertyConfig config;
 
   private String customProperty;
-  private Properties props = new Properties();
+  private Properties props;
 
   private PropertyConfig(String fileName) {
+    this.props = new Properties();
+
     if (isNotBlank(fileName)) {
       this.customProperty = fileName;
-
-    } else {
-      LOGGER.debug("No config file supplied. Use default {}", DEFAULT_PROPERTY);
+      return;
     }
+    LOGGER.debug("No config file supplied. Use default {}", DEFAULT_PROPERTY);
   }
 
   public static PropertyConfig getInstance(String fileName) {

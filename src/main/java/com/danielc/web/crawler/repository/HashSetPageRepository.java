@@ -3,10 +3,9 @@ package com.danielc.web.crawler.repository;
 import com.danielc.web.crawler.model.Page;
 import com.google.common.collect.Sets;
 
-import java.util.List;
 import java.util.Set;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class HashSetPageRepository implements PageRepository {
 
@@ -23,19 +22,19 @@ public class HashSetPageRepository implements PageRepository {
   }
 
   @Override
-  public List<Page> findAllWithoutError() {
+  public Set<Page> findAllWithoutError() {
     return visitedPages.stream()
       .filter(page -> !page.isInError())
       .sorted()
-      .collect(toList());
+      .collect(toSet());
   }
 
   @Override
-  public List<Page> findAllInError() {
+  public Set<Page> findAllInError() {
     return visitedPages.stream()
       .filter(Page::isInError)
       .sorted()
-      .collect(toList());
+      .collect(toSet());
   }
 
   @Override

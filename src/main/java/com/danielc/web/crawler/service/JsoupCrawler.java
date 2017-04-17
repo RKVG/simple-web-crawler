@@ -9,7 +9,6 @@ import com.danielc.web.crawler.model.PageBuilder;
 import com.danielc.web.crawler.repository.PageRepository;
 import com.danielc.web.crawler.repository.UrlRepository;
 import com.danielc.web.crawler.util.DomainMatcher;
-import com.danielc.web.crawler.util.URLFormatHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.jsoup.HttpStatusException;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.danielc.web.crawler.util.URLFormatHelper.cleanUrl;
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.jsoup.Connection.Response;
@@ -57,6 +57,8 @@ public class JsoupCrawler implements Crawler {
 
   @Override
   public void crawl(String baseUrl) {
+    LOGGER.info("Start crawling with requestTimeout={}, followRedirects={}", config.getCrawlerRequestTimeout(), config.isCrawlerFollowRedirects());
+
     final DomainMatcher domainMatcher = new DomainMatcher(baseUrl);
     int visitedUrlCounter = 0;
 
@@ -71,7 +73,6 @@ public class JsoupCrawler implements Crawler {
       for (String url : unvisitedUrls) {
 
         try {
-          LOGGER.debug("Crawling {} with requestTimeout={}, followRedirects={}", url, config.getCrawlerRequestTimeout(), config.isCrawlerFollowRedirects());
 
           Response response = Jsoup.connect(url)
             .timeout(config.getCrawlerRequestTimeout())
@@ -79,15 +80,17 @@ public class JsoupCrawler implements Crawler {
             .ignoreContentType(true)
             .execute();
 
+          LOGGER.debug("Got response from {} with statusCode={}, contentType={}", url, response.statusCode(), response.contentType());
+
           if (response.statusCode() < 300 && response.contentType() != null && response.contentType().contains(ACCEPTED_CONTENT_TYPE)) {
 
             Document doc = response.parse();
 
-            // Collect all executable links
+            // Collect all links - a hrefs and href to assets
             Set<String> links = collectLinkSet(doc.select("a[href],link[href]").stream().map(link -> cleanUrl(link.attr("abs:href"))).collect(toList()), executableLinkCollectors);
 
-            List<String> assetLinks = assetUriCollector.collect(Lists.newArrayList(links)); // Some links might be asset, for example http://www.test.com/read-this.pdf
-            List<String> executableLinks = links.stream().filter(link -> !assetLinks.contains(link)).collect(toList());
+            Collection<String> assetLinks = assetUriCollector.collect(links); // Some links might be asset, for example http://www.test.com/read-this.pdf
+            Collection<String> executableLinks = links.stream().filter(link -> !assetLinks.contains(link)).collect(toSet());
 
             // Collect all asset links
             Set<String> metaAssets = collectLinkSet(doc.select("meta[content]").stream().map(link -> link.attr("abs:content")).collect(toList()), assetLinkCollectors);
@@ -110,7 +113,7 @@ public class JsoupCrawler implements Crawler {
             throw new HttpStatusException(response.statusMessage(), response.statusCode(), url);
 
           } else {
-            throw new UnsupportedMimeTypeException(String.format("Unsupported mime type %s. Only accept %s", response.contentType(), ACCEPTED_CONTENT_TYPE), response.contentType(), url);
+            throw new UnsupportedMimeTypeException(format("Unsupported mime type %s. Only accept %s", response.contentType(), ACCEPTED_CONTENT_TYPE), response.contentType(), url);
 
           }
 
@@ -131,17 +134,16 @@ public class JsoupCrawler implements Crawler {
 
       urlRepository.refreshUnvisitedUrls(
         newUrls.stream()
-          .map(URLFormatHelper::cleanUrl)
           .filter(link -> domainMatcher.matchedDomain(link) && !urlRepository.isUrlVisited(link))
           .collect(toSet())
       );
 
-      LOGGER.debug("Visited=[{}], Unvisited=[{}]", visitedUrlCounter, urlRepository.countUnvisitedUrls());
+      LOGGER.info("Visited=[{}], Unvisited=[{}]", visitedUrlCounter, urlRepository.countUnvisitedUrls());
     }
   }
 
   private Set<String> collectLinkSet(Collection<String> links, List<Collector> collectors) {
-    List<String> results = Lists.newArrayList(links);
+    Collection<String> results = links;
 
     for (Collector collector : collectors) {
       results = collector.collect(results);
@@ -166,7 +168,6 @@ public class JsoupCrawler implements Crawler {
     if (e instanceof HttpStatusException) {
       return ((HttpStatusException) e).getStatusCode();
     }
-
     return 500;
   }
 

@@ -5,6 +5,7 @@ import com.danielc.web.crawler.repository.PageRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.repeat;
 
 public class GsonPrinter implements Printer {
@@ -28,7 +29,10 @@ public class GsonPrinter implements Printer {
   }
 
   public GsonPrinter() {
-    this.gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+    this.gson = new GsonBuilder()
+      .disableHtmlEscaping()
+      .setPrettyPrinting()
+      .create();
   }
 
   @Override
@@ -37,7 +41,7 @@ public class GsonPrinter implements Printer {
     int allCount = pageRepository.countAll();
     int errorCount = pageRepository.countInError();
 
-    printHeading(String.format(PRINT_HEADING, repeat(" ", MARGIN), allCount, repeat(" ", MARGIN)));
+    printHeading(format(PRINT_HEADING, repeat(" ", MARGIN), allCount, repeat(" ", MARGIN)));
 
     if (config.isPrinterExcludeErrors()) {
       System.out.println(gson.toJson(pageRepository.findAllWithoutError()));
@@ -46,7 +50,7 @@ public class GsonPrinter implements Printer {
     }
 
     if (config.isPrinterReportErrors() && errorCount > 0) {
-      printHeading(String.format(ERROR_REPORT_HEADING, repeat(" ", MARGIN), errorCount, allCount, repeat(" ", MARGIN)));
+      printHeading(format(ERROR_REPORT_HEADING, repeat(" ", MARGIN), errorCount, allCount, repeat(" ", MARGIN)));
       System.out.println(gson.toJson(pageRepository.findAllInError()));
     }
   }

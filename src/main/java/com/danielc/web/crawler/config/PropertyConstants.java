@@ -1,6 +1,6 @@
 package com.danielc.web.crawler.config;
 
-public interface PropertyConstants {
+interface PropertyConstants {
 
   String CRAWLER_REQUEST_TIMEOUT = "crawler.request.timeout";
   String CRAWLER_FOLLOW_REDIRECT = "crawler.follow.redirect";

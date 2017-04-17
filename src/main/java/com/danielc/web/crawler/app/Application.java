@@ -19,8 +19,7 @@ public class Application {
     this.crawler = crawler;
     this.printer = printer;
   }
-
-  // TODO: Test this -> "http://www.google.de/?gfe_rd=cr&ei=DHjyWNyeCYfe8gfw94CQAg";
+  
   public void run() {
     System.out.println(INSTRUCTION);
     Scanner scanner = new Scanner(System.in);

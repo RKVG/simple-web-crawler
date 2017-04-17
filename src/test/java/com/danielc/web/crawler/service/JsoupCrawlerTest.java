@@ -62,12 +62,14 @@ public class JsoupCrawlerTest {
   public void setup() throws Exception {
     mockStatic(Jsoup.class);
 
+    // Mock connections
     when(Jsoup.connect(anyString())).thenReturn(mockConnection);
     when(mockConnection.timeout(anyInt())).thenReturn(mockConnection);
     when(mockConnection.followRedirects(anyBoolean())).thenReturn(mockConnection);
     when(mockConnection.ignoreContentType(anyBoolean())).thenReturn(mockConnection);
     when(mockConnection.execute()).thenReturn(mockResponse);
 
+    // Mock response
     when(mockResponse.parse()).thenReturn(mockDocument);
     when(mockDocument.select(anyString())).thenReturn(mockElements);
 
