@@ -1,8 +1,12 @@
 package com.danielc.web.crawler.config;
 
-public class PropertyConstants {
+public interface PropertyConstants {
 
-  public static final String REQUEST_TIMEOUT = "app.request.timeout";
-  public static final String REQUEST_FOLLOW_REDIRECT = "app.follow-redirect";
+  String CRAWLER_REQUEST_TIMEOUT = "crawler.request.timeout";
+  String CRAWLER_FOLLOW_REDIRECT = "crawler.follow.redirect";
+  String CRAWLER_MAX_VISITED_URLS = "crawler.max.visited.urls";
+
+  String PRINTER_EXCLUDE_ERRORS = "printer.exclude.errors";
+  String PRINTER_REPORT_ERRORS = "printer.report.errors";
 
 }

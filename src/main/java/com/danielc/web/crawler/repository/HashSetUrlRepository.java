@@ -5,6 +5,8 @@ import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.Set;
 
+import static com.danielc.web.crawler.util.URLFormatHelper.cleanUrl;
+
 public class HashSetUrlRepository implements UrlRepository {
 
   private Set<String> visitedUrls = Sets.newHashSet();
@@ -12,12 +14,12 @@ public class HashSetUrlRepository implements UrlRepository {
 
   @Override
   public boolean storeVisitedUrl(String visitedUrl) {
-    return visitedUrls.add(visitedUrl);
+    return visitedUrls.add(cleanUrl(visitedUrl));
   }
 
   @Override
   public boolean storeUnvisitedUrl(String unvisitedUrl) {
-    return unvisitedUrls.add(unvisitedUrl);
+    return unvisitedUrls.add(cleanUrl(unvisitedUrl));
   }
 
   @Override
@@ -32,7 +34,7 @@ public class HashSetUrlRepository implements UrlRepository {
   }
 
   @Override
-  public int getUnvisitedUrlsCount() {
+  public int countUnvisitedUrls() {
     return unvisitedUrls.size();
   }
 

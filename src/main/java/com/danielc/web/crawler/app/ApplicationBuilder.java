@@ -48,22 +48,16 @@ public class ApplicationBuilder {
       throw new IllegalStateException("No application config found!");
     }
 
-    if (this.crawler != null) {
-      if (this.urlRepository == null || this.pageRepository == null) {
-        throw new IllegalStateException("Error when setting repository!");
+    if (this.urlRepository == null || this.pageRepository == null) {
+      throw new IllegalStateException("Error when setting repository!");
+    }
 
-      } else {
-        this.crawler.setRepositories(urlRepository, pageRepository);
-      }
+    if (this.crawler != null) {
+      this.crawler.setRepositories(urlRepository, pageRepository);
     }
 
     if (this.printer != null) {
-      if (this.pageRepository == null) {
-        throw new IllegalStateException("Error when setting repository!");
-
-      } else {
-        this.printer.setRepository(pageRepository);
-      }
+      this.printer.setRepository(pageRepository);
     }
 
     return new Application(this.appConfig, this.crawler, this.printer);

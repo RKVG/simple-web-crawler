@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.hasProperty;
 
 public class TreeSetPageRepositoryTest {
 
-  private TreeSetPageRepository candidate = new TreeSetPageRepository();
+  private HashSetPageRepository candidate = new HashSetPageRepository();
 
   @Test
   public void shouldStorePage() {

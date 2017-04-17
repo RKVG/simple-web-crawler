@@ -27,7 +27,7 @@ public class HashSetUrlRepositoryTest {
     candidate.storeUnvisitedUrl("http://www.google.com");
     candidate.storeUnvisitedUrl("http://www.google.co.uk");
 
-    assertThat(candidate.getUnvisitedUrlsCount(), is(2));
+    assertThat(candidate.countUnvisitedUrls(), is(2));
     assertThat(candidate.findAllUnvisitedUrls(), containsInAnyOrder(
       "http://www.google.co.uk",
       "http://www.google.com"
@@ -35,7 +35,7 @@ public class HashSetUrlRepositoryTest {
 
     candidate.refreshUnvisitedUrls(Lists.newArrayList("http://www.google.co.nz"));
 
-    assertThat(candidate.getUnvisitedUrlsCount(), is(1));
+    assertThat(candidate.countUnvisitedUrls(), is(1));
     assertThat(candidate.findAllUnvisitedUrls(), contains(
       "http://www.google.co.nz"
     ));

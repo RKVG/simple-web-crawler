@@ -11,8 +11,8 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
 
-import static com.danielc.web.crawler.config.PropertyConstants.REQUEST_FOLLOW_REDIRECT;
-import static com.danielc.web.crawler.config.PropertyConstants.REQUEST_TIMEOUT;
+import static com.danielc.web.crawler.config.PropertyConstants.CRAWLER_FOLLOW_REDIRECT;
+import static com.danielc.web.crawler.config.PropertyConstants.CRAWLER_REQUEST_TIMEOUT;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,8 +32,8 @@ public class PropertyConfigLoadingTest {
   @Test
   public void shouldLoadDefaultProperties() {
     // Arrange
-    when(mockedProperties.getProperty(REQUEST_TIMEOUT)).thenReturn("1000");
-    when(mockedProperties.getProperty(REQUEST_FOLLOW_REDIRECT)).thenReturn("true");
+    when(mockedProperties.getProperty(CRAWLER_REQUEST_TIMEOUT)).thenReturn("1000");
+    when(mockedProperties.getProperty(CRAWLER_FOLLOW_REDIRECT)).thenReturn("true");
 
     // Act
     Optional<AppConfig> result = candidate.load();
@@ -43,8 +43,8 @@ public class PropertyConfigLoadingTest {
 
     result.ifPresent(props -> {
       assertThat(props, is(instanceOf(PropertyConfig.class)));
-      assertThat(props.getRequestTimeout(), is(1000));
-      assertThat(props.getFollowRedirects(), is(true));
+      assertThat(props.getCrawlerRequestTimeout(), is(1000));
+      assertThat(props.isCrawlerFollowRedirects(), is(true));
     });
   }
 
@@ -63,14 +63,14 @@ public class PropertyConfigLoadingTest {
   @Test
   public void shouldHandleInvalidRequestTimeoutValidWithDefault() {
     // Arrange
-    when(mockedProperties.getProperty(REQUEST_TIMEOUT)).thenReturn("one hundred");
+    when(mockedProperties.getProperty(CRAWLER_REQUEST_TIMEOUT)).thenReturn("one hundred");
 
     // Act
     Optional<AppConfig> result = candidate.load();
 
     //Assert
     assertThat(result.isPresent(), is(true));
-    result.ifPresent(props -> assertThat(props.getRequestTimeout(), is(5000)));
+    result.ifPresent(props -> assertThat(props.getCrawlerRequestTimeout(), is(5000)));
   }
 
 }

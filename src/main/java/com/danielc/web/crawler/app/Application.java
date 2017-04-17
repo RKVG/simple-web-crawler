@@ -30,6 +30,8 @@ public class Application {
       .ifPresent(conf -> {
 
         crawler.setConfig(conf);
+        printer.setConfig(conf);
+
         crawler.crawl(scanner.nextLine());
         printer.print();
 

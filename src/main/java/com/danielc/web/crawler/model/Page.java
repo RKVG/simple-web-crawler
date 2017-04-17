@@ -11,10 +11,16 @@ public class Page implements Comparable<Page> {
 
   private String url;
   private Set<String> assets;
+  private PageError error;
 
   Page(String url, Set<String> assets) {
     this.url = url;
     this.assets = assets;
+  }
+
+  Page(String url, PageError error) {
+    this.url = url;
+    this.error = error;
   }
 
   public String getUrl() {
@@ -23,6 +29,10 @@ public class Page implements Comparable<Page> {
 
   public Set<String> getAssets() {
     return assets;
+  }
+
+  public boolean isInError() {
+    return error != null;
   }
 
   @Override

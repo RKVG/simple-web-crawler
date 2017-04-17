@@ -4,7 +4,7 @@ import com.danielc.web.crawler.app.Application;
 import com.danielc.web.crawler.app.ApplicationBuilder;
 import com.danielc.web.crawler.config.PropertyConfig;
 import com.danielc.web.crawler.repository.HashSetUrlRepository;
-import com.danielc.web.crawler.repository.TreeSetPageRepository;
+import com.danielc.web.crawler.repository.HashSetPageRepository;
 import com.danielc.web.crawler.service.GsonPrinter;
 import com.danielc.web.crawler.service.JsoupCrawler;
 
@@ -19,7 +19,7 @@ public class SimpleWebCrawler {
     Application application = ApplicationBuilder.newInstance()
       .appConfig(PropertyConfig.getInstance(configFile))
       .urlRepository(new HashSetUrlRepository())
-      .pageRepository(new TreeSetPageRepository())
+      .pageRepository(new HashSetPageRepository())
       .crawler(new JsoupCrawler())
       .printer(new GsonPrinter())
       .build();

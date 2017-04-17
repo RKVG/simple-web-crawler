@@ -7,23 +7,26 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class URLFormatHelper {
 
-  private static final Pattern FILE_PATTERN = Pattern.compile("^.+//.+/.+\\.(?<type>.[^./ ]+)$");
-  private static final Pattern URL_PATTERN = Pattern.compile("^(?<baseUrl>.+//.[^#?/ ]+).*$");
-
-  public static boolean isAssetUrl(String uri) {
-    if (isBlank(uri)) {
-      return false;
-    }
-
-    Matcher matcher = FILE_PATTERN.matcher(uri);
-    return matcher.find();
-  }
+  private static final Pattern URL_PATTERN = Pattern.compile("^(?<baseUrl>.+://.*[/.*]*[^/]).*$");
 
   public static String cleanUrl(String url) {
     if (isBlank(url)) {
       return url;
     }
 
+    String result = stripAllAfter(url, "?");
+    result = stripAllAfter(result, "#");
+    return stripForwardSlash(result);
+  }
+
+  private static String stripAllAfter(String url, String character) {
+    if (url.contains(character)) {
+      return url.substring(0, url.indexOf(character));
+    }
+    return url;
+  }
+
+  private static String stripForwardSlash(String url) {
     Matcher matcher = URL_PATTERN.matcher(url);
     return matcher.find() ? matcher.group("baseUrl") : url;
   }

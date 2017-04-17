@@ -11,9 +11,9 @@ public interface UrlRepository {
 
   boolean refreshUnvisitedUrls(Collection<String> unvisitedUrls);
 
-  Set<String> findAllUnvisitedUrls();
+  Collection<String> findAllUnvisitedUrls();
 
-  int getUnvisitedUrlsCount();
+  int countUnvisitedUrls();
 
   boolean isUrlVisited(String url);
 
