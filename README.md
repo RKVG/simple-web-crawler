@@ -3,7 +3,10 @@ Simple Web Crawler
 
 Write something here?
 
-**1. Run with default configuration**
+Run Simple Web Crawler
+----------------------
+
+**1. Run with default configuration** 
 
 In a console from where the jar file has been saved to
 ```
@@ -30,14 +33,15 @@ Type in a URL (**_a valid full URL, including `http://` or `https://`_**), press
 
 **Available configurations** 
 | Name                         | Type    | Description |
-| ---------------------------- |---------| ----------- |
+|:-----------------------------|:-------:|:------------|
 | crawler.request.timeout      | integer | HTTP connection timeout. The default is **5000** (5 seconds) |
 | crawler.follow.redirect      | boolean | If the crawler needs to follow a redirect. The default is **true**. Please note that there can be a significant number of 301 errors if this is set to false |
 | crawler.max.visited.urls     | integer | Maximum number of URLs to visit. The crawler will exit if it has visited more URLs than this set limit. The default is **2000** |
 | printer.exclude.errors       | boolean | If the printer needs to exclude pages that are in error. The default is **true** |
 | printer.report.errors        | boolean | If the printer needs to print an error report. The default is **true** |
 
-**3. To build**
+Build Simple Web Crawler
+------------------------
 
 You need to make sure you have install Java 8+, Maven 3 and you are connected to an up-to-date maven repository OR internet
 * Under the root directory type `mvn clean install`
