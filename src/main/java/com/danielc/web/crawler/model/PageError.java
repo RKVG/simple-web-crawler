@@ -10,4 +10,12 @@ public class PageError {
     this.message = message;
   }
 
+  public int getHttpStatus() {
+    return httpStatus;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
 }

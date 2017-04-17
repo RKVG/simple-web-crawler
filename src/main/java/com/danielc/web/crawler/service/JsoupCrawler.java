@@ -30,7 +30,7 @@ import static org.jsoup.Connection.Response;
 public class JsoupCrawler implements Crawler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JsoupCrawler.class);
-  private static final String ACCEPTED_CONTENT_TYPE = "text/html";
+  public static final String ACCEPTED_CONTENT_TYPE = "text/html";
 
   private Collector nonEmptyCollector = new NonEmptyCollector();
   private Collector noWhitespaceCollector = new NoWhitespaceCollector();
@@ -78,7 +78,7 @@ public class JsoupCrawler implements Crawler {
             .ignoreContentType(true)
             .execute();
 
-          if (response.contentType() != null && response.contentType().contains(ACCEPTED_CONTENT_TYPE)) {
+          if (response.statusCode() < 300 && response.contentType() != null && response.contentType().contains(ACCEPTED_CONTENT_TYPE)) {
 
             Document doc = response.parse();
 
@@ -123,7 +123,7 @@ public class JsoupCrawler implements Crawler {
         }
 
         if (visitedUrlCounter >= config.getCrawlerMaxVisitedUrls()) {
-          LOGGER.info("We have reached the predefined max number of page to visit {}. Bye!", visitedUrlCounter);
+          LOGGER.info("We have reached the predefined max number of pages to visit {}. Bye!", visitedUrlCounter);
           break crawlingLoop;
         }
       }

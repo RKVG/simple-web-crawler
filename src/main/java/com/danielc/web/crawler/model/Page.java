@@ -31,6 +31,10 @@ public class Page implements Comparable<Page> {
     return assets;
   }
 
+  public PageError getError() {
+    return error;
+  }
+
   public boolean isInError() {
     return error != null;
   }

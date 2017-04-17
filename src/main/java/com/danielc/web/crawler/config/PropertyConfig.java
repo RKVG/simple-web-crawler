@@ -97,7 +97,7 @@ public class PropertyConfig implements AppConfig {
     }
   }
 
-  private InputStream loadPropertyWithDefault() throws FileNotFoundException {
+  InputStream loadPropertyWithDefault() throws FileNotFoundException {
     if (isNotBlank(customProperty)) {
       return new FileInputStream(customProperty);
     }
