@@ -32,6 +32,7 @@ printer.report.errors=true
 Type in a URL (**_a valid full URL, including `http://` or `https://`_**), press Enter to execute 
 
 **Available configurations** 
+
 | Name                         | Type    | Description |
 |:-----------------------------|:-------:|:------------|
 | crawler.request.timeout      | integer | HTTP connection timeout. The default is **5000** (5 seconds) |
