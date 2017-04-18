@@ -11,7 +11,7 @@ It also assumes that a user may want to crawl both secured and unsecured page un
 
 Run Simple Web Crawler
 ----------------------
-Before running the application, please make sure that you have a working version of Java installed on your machine. For details on how to install Java please refer to [How do I install Java?](https://www.java.com/en/download/help/download_options.xml)
+Before running the application, please make sure that you have installed Java 8 on your machine (`java -version`). For details on how to install Java please refer to [How do I install Java?](https://www.java.com/en/download/help/download_options.xml)
 
 **1. Run with default configuration** 
 
@@ -53,7 +53,7 @@ Type in a URL (**_a valid full URL, including `http://` or `https://`_**), press
 Build Simple Web Crawler
 ------------------------
 
-You need to make sure that you have installed Java 8+, Maven 3 and you are connected to an _**up-to-date** maven repository_ OR _the Internet_
+You need to make sure that you have installed Java 8, Maven 3 and you are connected to an _**up-to-date** maven repository_ OR _the Internet_
 * Under the root directory type `mvn clean package`
 * Test coverage report can be found under _target/jacoco/site_
 * The default logging level is set to 'DEBUG'. You can change it in _src/resources/simplelogger.properties_
