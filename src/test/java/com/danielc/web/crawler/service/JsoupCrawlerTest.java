@@ -64,6 +64,7 @@ public class JsoupCrawlerTest {
 
     // Mock connections
     when(Jsoup.connect(anyString())).thenReturn(mockConnection);
+    when(mockConnection.userAgent(anyString())).thenReturn(mockConnection);
     when(mockConnection.timeout(anyInt())).thenReturn(mockConnection);
     when(mockConnection.followRedirects(anyBoolean())).thenReturn(mockConnection);
     when(mockConnection.ignoreContentType(anyBoolean())).thenReturn(mockConnection);
@@ -193,7 +194,9 @@ public class JsoupCrawlerTest {
     when(mockHtmlElement.attr(anyString())).thenReturn("http://www.google.com/old-page.html");
     when(mockAssetElement.attr(anyString())).thenReturn("http://www.google.com/read-me.pdf");
 
+    when(mockAppConfig.getCrawlerMockUserAgent()).thenReturn("IE");
     when(mockAppConfig.getCrawlerMaxVisitedUrls()).thenReturn(2);
+
     when(mockResponse.statusCode()).thenReturn(200);
     when(mockResponse.contentType()).thenReturn(ACCEPTED_CONTENT_TYPE);
     when(mockDocument.select(anyString())).thenReturn(mockElements);
@@ -214,6 +217,7 @@ public class JsoupCrawlerTest {
 
     verify(mockUrlRepository).storeVisitedUrl("http://www.google.com");
     verify(mockUrlRepository).refreshUnvisitedUrls(Sets.newHashSet("http://www.google.com/old-page.html"));
+    verify(mockConnection).userAgent("IE");
   }
 
 }

@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 import static com.danielc.web.crawler.config.PropertyConstants.*;
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
@@ -61,6 +62,11 @@ public class PropertyConfig implements AppConfig {
     }
 
     return Optional.of(this);
+  }
+
+  @Override
+  public String getCrawlerMockUserAgent() {
+    return firstNonNull(props.getProperty(CRAWLER_MOCK_USER_AGENT), DEFAULT_CRAWLER_MOCK_USER_AGENT);
   }
 
   @Override

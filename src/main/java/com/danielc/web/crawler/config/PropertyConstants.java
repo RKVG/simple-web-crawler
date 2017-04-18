@@ -2,6 +2,7 @@ package com.danielc.web.crawler.config;
 
 interface PropertyConstants {
 
+  String CRAWLER_MOCK_USER_AGENT = "crawler.mock.user.agent";
   String CRAWLER_REQUEST_TIMEOUT = "crawler.request.timeout";
   String CRAWLER_FOLLOW_REDIRECT = "crawler.follow.redirect";
   String CRAWLER_MAX_VISITED_URLS = "crawler.max.visited.urls";

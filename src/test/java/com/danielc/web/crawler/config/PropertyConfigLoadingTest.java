@@ -32,6 +32,7 @@ public class PropertyConfigLoadingTest {
   @Test
   public void shouldLoadDefaultProperties() {
     // Arrange
+    when(mockedProperties.getProperty(CRAWLER_MOCK_USER_AGENT)).thenReturn("Chrome");
     when(mockedProperties.getProperty(CRAWLER_REQUEST_TIMEOUT)).thenReturn("1000");
     when(mockedProperties.getProperty(CRAWLER_FOLLOW_REDIRECT)).thenReturn("true");
     when(mockedProperties.getProperty(CRAWLER_MAX_VISITED_URLS)).thenReturn("50");
@@ -46,6 +47,8 @@ public class PropertyConfigLoadingTest {
 
     result.ifPresent(props -> {
       assertThat(props, is(instanceOf(PropertyConfig.class)));
+
+      assertThat(props.getCrawlerMockUserAgent(), is("Chrome"));
       assertThat(props.getCrawlerRequestTimeout(), is(1000));
       assertThat(props.isCrawlerFollowRedirects(), is(true));
       assertThat(props.getCrawlerMaxVisitedUrls(), is(50));

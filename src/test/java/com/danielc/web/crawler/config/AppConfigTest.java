@@ -13,6 +13,11 @@ public class AppConfigTest {
   private AppConfig candidate = Optional::empty;
 
   @Test
+  public void shouldDefaultMockUserAgent() {
+    assertThat(candidate.getCrawlerMockUserAgent(), is(DEFAULT_CRAWLER_MOCK_USER_AGENT));
+  }
+
+  @Test
   public void shouldDefaultRequestTimeoutValue() {
     assertThat(candidate.getCrawlerRequestTimeout(), is(DEFAULT_CRAWLER_REQUEST_TIMEOUT));
   }

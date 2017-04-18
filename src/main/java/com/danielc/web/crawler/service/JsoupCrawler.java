@@ -11,6 +11,7 @@ import com.danielc.web.crawler.repository.UrlRepository;
 import com.danielc.web.crawler.util.DomainMatcher;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.UnsupportedMimeTypeException;
@@ -26,6 +27,7 @@ import static com.danielc.web.crawler.util.URLFormatHelper.cleanUrl;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.jsoup.Connection.Response;
 
 public class JsoupCrawler implements Crawler {
@@ -57,7 +59,7 @@ public class JsoupCrawler implements Crawler {
 
   @Override
   public void crawl(String baseUrl) {
-    LOGGER.info("Start crawling with requestTimeout={}, followRedirects={}", config.getCrawlerRequestTimeout(), config.isCrawlerFollowRedirects());
+    LOGGER.info("Start crawling with requestTimeout={}, followRedirects={}, userAgent={}", config.getCrawlerRequestTimeout(), config.isCrawlerFollowRedirects(), config.getCrawlerMockUserAgent());
 
     final DomainMatcher domainMatcher = new DomainMatcher(baseUrl);
     int visitedUrlCounter = 0;
@@ -74,11 +76,8 @@ public class JsoupCrawler implements Crawler {
 
         try {
 
-          Response response = Jsoup.connect(url)
-            .timeout(config.getCrawlerRequestTimeout())
-            .followRedirects(config.isCrawlerFollowRedirects())
-            .ignoreContentType(true)
-            .execute();
+          Connection connection = setupConnection(url);
+          Response response = connection.execute();
 
           LOGGER.debug("Got response from {} with statusCode={}, contentType={}", url, response.statusCode(), response.contentType());
 
@@ -140,6 +139,21 @@ public class JsoupCrawler implements Crawler {
 
       LOGGER.info("Visited=[{}], Unvisited=[{}]", visitedUrlCounter, urlRepository.countUnvisitedUrls());
     }
+  }
+
+  private Connection setupConnection(String baseUrl) {
+
+    Connection connection = Jsoup
+      .connect(baseUrl)
+      .timeout(config.getCrawlerRequestTimeout())
+      .followRedirects(config.isCrawlerFollowRedirects())
+      .ignoreContentType(true);
+
+    if (isNotBlank(config.getCrawlerMockUserAgent())) {
+      connection.userAgent(config.getCrawlerMockUserAgent());
+    }
+
+    return connection;
   }
 
   private Set<String> collectLinkSet(Collection<String> links, List<Collector> collectors) {
